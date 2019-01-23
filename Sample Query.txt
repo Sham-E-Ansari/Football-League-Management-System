@@ -1,0 +1,54 @@
+0) SELECT player.player_name as Player, SUM(player_stats.goals)as Goals "
+                    + "FROM player INNER JOIN player_stats ON player.player_id = player_stats.player_id "
+                    + "GROUP BY player_stats.player_id ORDER BY SUM(player_stats.goals) DESC LIMIT "+ playerNumber+ " "
+
+
+1) SELECT player.player_name as Player, SUM(player_stats."+cardType+")as "
+                    + "Cards FROM player INNER JOIN player_stats ON player.player_id = player_stats.player_id "
+                    + "INNER JOIN team ON team.team_id = player.team_id WHERE team.team_name = '"+cardTeam+"' "
+                    + "GROUP BY player_stats.player_id ORDER BY SUM(player_stats.yellow_card) DESC LIMIT "+playerNumber+" "
+
+
+2) SELECT player.player_name as Player FROM player INNER JOIN "
+                    + "team ON team.team_id = player.team_id WHERE player.player_position = '"+playerPos+"' "
+                    + "AND team.team_name = '"+playerTeam+"' "
+
+
+3) SELECT player.player_name as Player FROM player INNER JOIN "
+                    + "team ON team.team_id = player.team_id WHERE player.player_position = '"+playerPos+"' "
+                    + "AND team.team_name = '"+playerTeam+"' "
+
+
+4) SELECT schedules.play_date , homeTeam.team_name as Home, \n" +
+"				AwayTeam.team_name as Away, matchplay.score , matchplay.match_id FROM schedules INNER join matchplay\n" +
+"				ON schedules.match_id = matchplay.match_id INNER JOIN team as homeTeam on \n" +
+"				matchplay.home_team_id = homeTeam.team_id INNER JOIN team as AwayTeam on \n" +
+"				matchplay.away_team_id = AwayTeam.team_id WHERE schedules.play_date <'2017-08-08' ORDER BY `schedules`.`play_date` LIMIT "+ matchNumber +" "
+
+
+5) SELECT player.player_name , goals.goal_time, team.team_name FROM goals "
+                    + "INNER JOIN player on goals.player_id = player.player_id INNER JOIN matchplay ON "
+                    + "goals.match_id = matchplay.match_id INNER JOIN team ON goals.team_id = team.team_id"
+                    + " WHERE matchplay.home_team_id = ( SELECT team.team_id FROM team WHERE team.team_name = '"+homeTeam+"' )"
+                    + " AND matchplay.away_team_id = ( SELECT team.team_id FROM team WHERE team.team_name = '"+awayTeam+"' )"
+
+
+6)  SELECT coach.coach_name as Coach , team.team_name as Team"
+                    + " FROM coach INNER JOIN team on team.coach_id = coach.coach_id WHERE coach.nationality = '"+ nat +"' "
+
+
+7) SELECT schedules.play_date , homeTeam.team_name as Home, AwayTeam.team_name as Away ,"
+                    + " time_slot.start_time , matchplay.stadium_name FROM schedules INNER JOIN time_slot ON "
+                    + "schedules.time_slot_id = time_slot.time_slot_id INNER join matchplay ON schedules.match_id = matchplay.match_id"
+                    + " INNER JOIN team as homeTeam on matchplay.home_team_id = homeTeam.team_id INNER JOIN team as AwayTeam on "
+                    + "matchplay.away_team_id = AwayTeam.team_id WHERE schedules.play_date >'2017-08-08' AND "
+                    + "( homeTeam.team_name = '"+Team+"' OR AwayTeam.team_name = '"+Team+"' ) ORDER BY schedules.play_date LIMIT "+ matchNumber+" "
+
+
+8) SELECT stadium.stadium_name, city, capacity FROM stadium INNER JOIN team on "
+                    + "team.stadium_name = stadium.stadium_name WHERE team.team_name = '"+team+"' 
+
+
+9) SELECT Team , possesion FROM ( SELECT AVG(match_details.home_pos) AS possesion ,"
+                    + " team.team_name as Team FROM match_details INNER JOIN matchplay ON matchplay.match_id = match_details.match_id "
+                    + "INNER JOIN team ON matchplay.home_team_id = team.team_id GROUP BY team.team_id )AS myalias ORDER BY possesion DESC limit "+ matchNumber +""

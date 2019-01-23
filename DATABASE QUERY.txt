@@ -1,0 +1,181 @@
+1) Stadium Table:
+
+CREATE TABLE stadium 
+( 
+stadium_name varchar(30) NOT NULL,
+city varchar(30) NOT NULL,
+capacity int(8) NOT NULL,
+CONSTRAINT pk_stadium PRIMARY KEY(stadium_name)
+);
+
+2) Coach Table:
+
+
+CREATE TABLE coach
+( 
+coach_id int(8) NOT NULL AUTO_INCREMENT,
+nationality varchar(30) NOT NULL,
+coach_name varchar(30) NOT NULL,
+CONSTRAINT pk_coach PRIMARY KEY(coach_id)
+);
+
+3) Team Table:
+
+CREATE TABLE team
+(
+team_id int(8) NOT NULL AUTO_INCREMENT,
+team_name varchar(30) NOT NULL,
+coach_id int(8) NOT NULL,
+stadium_name varchar(30) NOT NULL,
+CONSTRAINT pk_team PRIMARY KEY(team_id,team_name),
+CONSTRAINT fk_team_coach FOREIGN KEY(coach_id) REFERENCES coach(coach_id),
+CONSTRAINT fk_team_stadium FOREIGN KEY(stadium_name) REFERENCES stadium(stadium_name)
+);
+
+4) Team_Stats Table:
+
+CREATE TABLE team_stats
+(
+team_id int(8) NOT NULL,
+season varchar(10) NOT NULL,
+position varchar(30) NOT NULL,
+CONSTRAINT pk_team_stats PRIMARY KEY(team_id,season),
+CONSTRAINT fk_team_stats FOREIGN KEY(team_id) REFERENCES team(team_id)
+);
+
+5) Referee Table:
+
+CREATE TABLE referee
+(
+ref_id int(8) NOT NULL AUTO_INCREMENT,
+ref_name varchar(30) NOT NULL,
+nationality varchar(30) NOT NULL,
+CONSTRAINT pk_referee PRIMARY KEY(ref_id)
+);
+
+6) Time_Slot Table:
+
+CREATE TABLE time_slot
+(
+time_slot_id char(1) NOT NULL,
+start_time time NOT NULL,
+CONSTRAINT pk_time_slot PRIMARY KEY(time_slot_id)
+);
+
+7) Player Table:
+
+CREATE TABLE player
+(
+player_id int(8) NOT NULL AUTO_INCREMENT,
+player_name varchar(30) NOT NULL,
+nationality varchar(30) NOT NULL,
+weight int(4) NOT NULL,
+height int(4) NOT NULL,
+date_of_birth date NOT NULL,
+player_position varchar(30) NOT NULL,
+team_id int(8) NOT NULL,
+CONSTRAINT pk_player PRIMARY KEY(player_id),
+CONSTRAINT fk_player FOREIGN KEY(team_id) REFERENCES team(team_id)
+);
+
+8)Player_Stats Table:
+
+CREATE TABLE player_stats
+(
+player_id int(8) NOT NULL,
+p_season varchar(10) NOT NULL,
+apps int(4) NOT NULL,
+goals int(4) NOT NULL,
+assists int(4) NOT NULL,
+own_goals int(4) NOT NULL,
+yellow_card int(4) NOT NULL,
+red_card int(4) NOT NULL,
+CONSTRAINT pk_player_stats PRIMARY KEY(player_id,p_season),
+CONSTRAINT fk_player_stats FOREIGN KEY(player_id) REFERENCES player(player_id)
+);
+
+9) MatchPlay Table:
+
+CREATE TABLE matchplay
+(
+match_id int NOT NULL AUTO_INCREMENT,
+score varchar(30) NOT NULL,
+stadium_name varchar(30) NOT NULL,
+ref_id int(8) NOT NULL,
+home_team_id int(8) NOT NULL,
+away_team_id int(8) NOT NULL,
+CONSTRAINT pk_matchplay PRIMARY KEY(match_id),
+CONSTRAINT fk_matchplay_stadium FOREIGN KEY(stadium_name) REFERENCES stadium(stadium_name),
+CONSTRAINT fk_matchplay_ref FOREIGN KEY(ref_id) REFERENCES referee(ref_id),
+CONSTRAINT fk_matchplay_team1 FOREIGN KEY(home_team_id) REFERENCES team(team_id),
+CONSTRAINT fk_matchplay_team2 FOREIGN KEY(away_team_id) REFERENCES team(team_id)
+);
+
+10) Match_Details Table:
+
+CREATE TABLE match_details
+(
+match_id int NOT NULL,
+home_pos int(8) NOT NULL,
+away_pos int(8) NOT NULL,
+home_goals int(8) NOT NULL,
+away_goals int(8) NOT NULL,
+home_fouls int(8) NOT NULL,
+away_fouls int(8) NOT NULL,
+CONSTRAINT pk_match_details PRIMARY KEY(match_id),
+CONSTRAINT fk_match_details FOREIGN KEY(match_id) REFERENCES matchplay(match_id)
+);
+
+11) Schedules Table:
+
+CREATE TABLE schedules
+(
+match_id int NOT NULL,
+time_slot_id char(1) NOT NULL,
+play_date date NOT NULL,
+CONSTRAINT pk_schedules PRIMARY KEY(match_id,time_slot_id),
+CONSTRAINT fk_schedules_maychplay FOREIGN KEY(match_id) REFERENCES matchplay(match_id),
+CONSTRAINT fk_schedules_time_slot FOREIGN KEY(time_slot_id) REFERENCES time_slot(time_slot_id)
+);
+
+12) Fouls Table:
+
+CREATE TABLE fouls
+(
+player_id int(8) NOT NULL,
+match_id int NOT NULL,
+foul_time int(4) NOT NULL,
+card_type varchar(30) NOT NULL,
+team_id int(8) NOT NULL,
+CONSTRAINT pk_fouls PRIMARY KEY(match_id,team_id,player_id,foul_time),
+CONSTRAINT fk_fouls_team FOREIGN KEY(team_id) REFERENCES team(team_id),
+CONSTRAINT fk_fouls_matchplay FOREIGN KEY(match_id) REFERENCES matchplay(match_id),
+CONSTRAINT fk_fouls_player FOREIGN KEY(player_id) REFERENCES player(player_id)
+);
+
+13) Goals Table:
+
+CREATE TABLE goals
+(
+player_id int(8) NOT NULL,
+match_id int NOT NULL,
+goal_time int(4) NOT NULL,
+team_id int(8) NOT NULL,
+CONSTRAINT pk_goals PRIMARY KEY(match_id,team_id,player_id,goal_time),
+CONSTRAINT fk_goals_team FOREIGN KEY(team_id) REFERENCES team(team_id),
+CONSTRAINT fk_goals_matchplay FOREIGN KEY(match_id) REFERENCES matchplay(match_id),
+CONSTRAINT fk_goals_player FOREIGN KEY(player_id) REFERENCES player(player_id)
+);
+
+14) CREATE TABLE point_table
+(
+point_table_id int NOT NULL,
+team_id int(8) NOT NULL,
+apps int(8) NOT NULL,
+wins int(8) NOT NULL,
+draw int(8) NOT NULL,
+loses int(8) NOT NULL,
+points int(8) NOT NULL,
+CONSTRAINT pk_point_table PRIMARY KEY(point_table_id),
+CONSTRAINT fk_point_table FOREIGN KEY(team_id) REFERENCES team(team_id)
+);
